@@ -1,81 +1,53 @@
-import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   createStackNavigator,
-  createBottomTabNavigator,
   createAppContainer,
+  createSwitchNavigator
 } from 'react-navigation';
 
 import HomeScreen from '../screens/Home';
-
 import MapsScreen from '../screens/Maps';
+import AuthScreen from '../screens/Auth/Auth';
+import LoginScreen from '../screens/Auth/Login';
+import RegisterScreen from '../screens/Auth/Register';
 
-import AuthScreen from '../screens/Auth';
-
-const HomeStack = createStackNavigator(
+const createStack = createStackNavigator(
   {
-    Home: { screen: HomeScreen }
+    Home: { screen: HomeScreen },
+    Maps: { screen: MapsScreen }
   },
   {
-    headerMode: 'none',
+    headerMode: "none",
     navigationOptions: {
-      headerVisible: false,
+      headerVisible: false
     }
   }
 );
 
-const MapsStack = createStackNavigator(
+const stackAuth = createStackNavigator(
   {
-    Maps: { screen: MapsScreen },
+    Login: { screen: LoginScreen }
   },
   {
-    headerMode: 'none',
+    headerMode: "none",
     navigationOptions: {
-      headerVisible: false,
+      headerVisible: false
     }
   }
 );
 
-const AuthStack = createStackNavigator(
+const createSwitch = createSwitchNavigator(
   {
-    Auth: { screen: AuthScreen },
+    authLoading: { screen: AuthScreen },
+    login: { screen: LoginScreen },
+    register: { screen: RegisterScreen},
+    App: createStack,
+    Auth: stackAuth
+
   },
   {
-    headerMode: 'none',
-    navigationOptions: {
-      headerVisible: false,
-    }
+    initialRouteName: 'authLoading'
+    // initialRouteName: 'login'
   }
 );
 
-
-const switchNavigator = createBottomTabNavigator(
-  {
-    Chat: { screen: HomeStack },
-    Maps: { screen: MapsStack },
-    Profile: { screen: AuthStack },
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        let IconComponent = Ionicons;
-        let iconName;
-        if (routeName === 'Chat') {
-          iconName = `md-chatbubbles`;
-        } else if (routeName === 'Maps') {
-          iconName = `md-map`;
-        } else if (routeName === 'Profile') {
-          iconName = `md-contacts`;
-        }
-        return <IconComponent name={iconName} size={25} color={tintColor} />;
-      },
-    }),
-    tabBarOptions: {
-      activeTintColor: '#00c0ff',
-      inactiveTintColor: 'gray',
-    },
-  }
-);
-
-export default createAppContainer(switchNavigator)
+export default Appcontainer = createAppContainer(createSwitch);

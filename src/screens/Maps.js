@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   con:{
     flex:1,
     width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height
   },
   map: {
     width: '100%',
