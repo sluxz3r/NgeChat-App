@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Dimensions, StatusBar, StyleSheet, View, AsyncStorage, Text, Image, ScrollView, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
-import MapView, { AnimatedRegion } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import geolocation from '@react-native-community/geolocation';
-
-
+import firebase from 'firebase';
+import FirebaseSvc from '../firebase/firebase';
 
 class Maps extends Component {
   constructor(props) {
@@ -13,7 +13,9 @@ class Maps extends Component {
       mapRegion: null,
       lastLat: null,
       lastLong: null,
+      users: []
     }
+    this.user()
   }
 
   componentDidMount() {
@@ -37,6 +39,18 @@ class Maps extends Component {
     });
   }
 
+  user = async () => {
+    firebase.database().ref('user/').once('value', (result) => {
+      let data = result.val();
+      if (data !== null) {
+        let users = Object.values(data);
+        this.setState({
+          users
+        })
+      }
+    });
+  }
+
   componentWillUnmount() {
     geolocation.clearWatch(this.watchID);
   }
@@ -48,22 +62,25 @@ class Maps extends Component {
           region={this.state.mapRegion}
           showsUserLocation={true}
           followUserLocation={true}
-          minZoomLevel={2}  // default => 0
-          maxZoomLevel={20} // default => 20
-          // onRegionChange={this.onRegionChange.bind(this)}
-        >
-          <MapView.Marker
+          minZoomLevel={0}  // default => 0
+          maxZoomLevel={20}
+           // default => 20
+        // onRegionChange={this.onRegionChange.bind(this)}
+        > 
+        {this.state.users.map((item)=>
+          <Marker
             coordinate={{
-              latitude: (this.state.lastLat + 0.00050) || -36.82339,
-              longitude: (this.state.lastLong + 0.00050) || -73.03569,
-            }}
-            description={"This is a marker in React Natve"}>
-            <View>
-              <Text style={{ color: '#000' }}>
-                {this.state.lastLong} / {this.state.lastLat}
-              </Text>
+              latitude: item.latitude,
+              longitude: item.longitude
+            }}>
+            <View style={styles.mapCoor}>
+              {/* <Text style={styles.name}>{item.name}</Text> */}
+              <Image
+                source={{uri:item.image}}
+                style={styles.image}/>
             </View>
-          </MapView.Marker>
+            <Text style={styles.name}>{item.name}</Text>
+        </Marker>)}
         </MapView>
       </View>
     );
@@ -71,13 +88,31 @@ class Maps extends Component {
 }
 export default Maps;
 const styles = StyleSheet.create({
-  con:{
-    flex:1,
+  con: {
+    flex: 1,
     width: Dimensions.get('screen').width,
     height: Dimensions.get('screen').height
   },
   map: {
     width: '100%',
     height: '100%'
+  },
+  mapCoor: {
+    height: 40,
+    width: 40,
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderRadius: 50,
+    justifyContent: 'center'
+  },
+  image:{
+    height:'100%',
+    width:'100%',
+    borderRadius: 50,
+  },
+  name:{
+    fontSize:10,
+    textAlign:'center',
+    marginBottom:10
   }
 })

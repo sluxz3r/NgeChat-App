@@ -5,21 +5,28 @@ import Header from '../components/header';
 import Maps from '../screens/Maps';
 import Chat from '../screens/Chat';
 import Geolocation from '@react-native-community/geolocation';
-import firebase from 'firebase'
-
-
+import firebase from 'firebase';
 
 class HomeScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
       index: 0,
+      name: null,
       routes: [
-        { key: 'Chat', title: 'Chat' },
         { key: 'Maps', title: 'Maps' },
+        { key: 'Chat', title: 'Chat' },
+ 
       ],
     }
     this.getLocation()
+  }
+  componentDidMount=async()=>{
+    await AsyncStorage.getItem('name').then((value) => {
+      this.setState({ 
+        name: value, 
+      })
+    })
   }
   getLocation = async () => {
     Geolocation.getCurrentPosition(info => {
@@ -33,29 +40,27 @@ class HomeScreen extends Component {
     AsyncStorage.getItem('uid', (error, result) => {
       if (result) {
         if (this.state.latitude) {
-          console.log('this', this.state.latitude)
           firebase.database().ref('user/' + result).update({
             latitude: this.state.latitude,
             longitude: this.state.longitude
           })
-
         }
       }
-    }
-    )
+    });
   }
   render() {
     this.updateLocation()
     return (
-      <ScrollView>
         <View style={{ flex: 1, }}>
-          <Header />
+           <StatusBar backgroundColor='#3498db' barStyle="light-content" />
+          <Header name={this.state.name} />
           <TabView
             navigationState={this.state}
             labelStyle={{ backgroundColor: 'red' }}
             renderScene={SceneMap({
+            
+              Maps: Maps,
               Chat: Chat,
-              Maps: Maps
 
             })}
             onIndexChange={index => this.setState({ index })}
@@ -71,7 +76,6 @@ class HomeScreen extends Component {
           />
 
         </View>
-      </ScrollView>
     );
   }
 }

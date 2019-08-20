@@ -16,6 +16,7 @@ class Login extends Component {
         await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
             .then(async (result) => {
                 await AsyncStorage.setItem('uid', result.user.uid);
+                await AsyncStorage.setItem('name', result.user.displayName);
                 AsyncStorage.getItem('uid', (error, result) => {
                     if (result) {
                         this.setState({

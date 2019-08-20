@@ -5,6 +5,9 @@ import Menu, { MenuItem } from 'react-native-material-menu';
 import { withNavigation } from 'react-navigation';
 
 class Header extends Component {
+    state={
+        name:null,
+    }
     _menu = null;
     setMenuRef = ref => {
         this._menu = ref;
@@ -17,11 +20,11 @@ class Header extends Component {
         let keys = ['uid','name','image']
         await AsyncStorage.multiRemove(keys, (error)=>{
             this.props.navigation.navigate('Login')
-            console.log(error)
         });
         
       };
     render() {
+        console.log(this.props.name)
         return (
             <View style={{ padding: 8, backgroundColor: '#3498db', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ justifyContent: 'center', }}>
@@ -32,7 +35,8 @@ class Header extends Component {
                     button={<Text onPress={this.showMenu}>
                         <Entypo name='dots-three-vertical' size={25} color='#f5f6f7' />
                     </Text>}
-                >
+                >   
+                    <MenuItem >{this.props.name}</MenuItem>
                     <MenuItem onPress={this.hideLogout}>log out</MenuItem>
                 </Menu>
             </View>

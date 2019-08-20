@@ -1,25 +1,33 @@
 import React from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, AsyncStorage } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, AsyncStorage, StatusBar } from 'react-native';
 import Login from '../Auth/Login';
 import firebase from 'firebase'
 
 export default class Loading extends React.Component {
   state = {
     uid: null,
+    isLoading:true,
   };
   constructor(props) {
     super(props);
-    AsyncStorage.getItem('uid').then((value) => {
-      this.setState({ uid: value })
+    
+  }
+
+  componentDidMount=async()=>{
+    await AsyncStorage.getItem('uid').then((value) => {
+      this.setState({ 
+        uid: value, 
+        isLoading: false,
+      })
     })
   }
   render() {
-    console.log('uid',this.state.uid)
     return (
       <View style={styles.container}>
-        {this.state.uid == null ?
+         <StatusBar backgroundColor='#3498db' barStyle="light-content" />
+        {this.state.isLoading == false ?this.state.uid == null ?
           (<Login />) :
-          (this.props.navigation.navigate('Home'))}
+          (this.props.navigation.navigate('Home')):<ActivityIndicator color={'white'} size={'large'}/>}
       </View>
     )
   }
@@ -29,5 +37,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#3498db'
   }
 })
