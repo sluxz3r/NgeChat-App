@@ -5,7 +5,6 @@ import {
     StyleSheet,
     Text,
     Image,
-    StatusBar,
     FlatList,
     TouchableOpacity,
     AsyncStorage
@@ -16,24 +15,32 @@ import { withNavigation } from 'react-navigation';
 
 class Chat extends Component {
     state = {
-        user: [],
+        users: [],
+        uid: null,
+        refreshing: false
     }
-    async componentDidMount() {
-        AsyncStorage.getItem('uid', (error, result) => {
-            if (result) {
-                firebase.database().ref('user/').once('value', (result) => {
-                    let data = result.val();
-                    if (data !== null) {
-                        let users = Object.values(data);
-                        this.setState({
-                            users
-                        })
+
+    componentWillMount = async () => {
+        const uid = await AsyncStorage.getItem('uid')
+        this.setState({ uid });
+        this.setState({ refreshing: true });
+        firebase.database().ref('user').on('child_added', (data) => {
+            let person = data.val();
+            person.id = data.key;
+            console.log('uidyid', person.id)
+
+            if (person.id != this.state.uid) {
+                this.setState((prevData) => {
+                    return {
+                        users: [...prevData.users, person]
                     }
-                });
+                })
+                this.setState({ refreshing: false });
             }
         })
     }
     render() {
+        console.log(this.state.users)
         return (
             <View>
                 <FlatList
@@ -41,7 +48,7 @@ class Chat extends Component {
                     numColumns={1}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => { this.props.navigation.navigate('BookDetails', item) }}>
+                            <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => { this.props.navigation.navigate('Chat', item) }}>
                                 <View style={styles.item} key={index}>
                                     <Image style={styles.image} source={{ uri: `${item.image}` }} />
                                 </View>

@@ -14,9 +14,8 @@ class HomeScreen extends Component {
       index: 0,
       name: null,
       routes: [
-        { key: 'Maps', title: 'Maps' },
         { key: 'Chat', title: 'Chat' },
- 
+        { key: 'Maps', title: 'Maps' },
       ],
     }
     this.getLocation()
@@ -58,10 +57,8 @@ class HomeScreen extends Component {
             navigationState={this.state}
             labelStyle={{ backgroundColor: 'red' }}
             renderScene={SceneMap({
-            
-              Maps: Maps,
               Chat: Chat,
-
+              Maps: Maps,
             })}
             onIndexChange={index => this.setState({ index })}
             initialLayout={{ width: Dimensions.get('window').width, height: 100 }}

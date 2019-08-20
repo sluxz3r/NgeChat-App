@@ -9,11 +9,13 @@ import MapsScreen from '../screens/Maps';
 import AuthScreen from '../screens/Auth/Auth';
 import LoginScreen from '../screens/Auth/Login';
 import RegisterScreen from '../screens/Auth/Register';
+import ChatRoom from '../screens/ChatRoom';
 
 const createStack = createStackNavigator(
   {
     Home: { screen: HomeScreen },
-    Maps: { screen: MapsScreen }
+    Maps: { screen: MapsScreen },
+    Chat : {screen: ChatRoom},
   },
   {
     headerMode: "none",

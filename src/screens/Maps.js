@@ -62,25 +62,27 @@ class Maps extends Component {
           region={this.state.mapRegion}
           showsUserLocation={true}
           followUserLocation={true}
+          zoomControlEnabled={true}
+          showsCompass={true}
           minZoomLevel={0}  // default => 0
           maxZoomLevel={20}
-           // default => 20
+        // default => 20
         // onRegionChange={this.onRegionChange.bind(this)}
-        > 
-        {this.state.users.map((item)=>
-          <Marker
-            coordinate={{
-              latitude: item.latitude,
-              longitude: item.longitude
-            }}>
-            <View style={styles.mapCoor}>
-              {/* <Text style={styles.name}>{item.name}</Text> */}
-              <Image
-                source={{uri:item.image}}
-                style={styles.image}/>
-            </View>
-            <Text style={styles.name}>{item.name}</Text>
-        </Marker>)}
+        >
+          {this.state.users.map((item) =>
+            <Marker
+              coordinate={{
+                latitude: item.latitude,
+                longitude: item.longitude
+              }}>
+              <View style={styles.mapCoor}>
+                {/* <Text style={styles.name}>{item.name}</Text> */}
+                <Image
+                  source={{ uri: item.image }}
+                  style={styles.image} />
+              </View>
+              <Text style={styles.name}>{item.name}</Text>
+            </Marker>)}
         </MapView>
       </View>
     );
@@ -105,14 +107,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center'
   },
-  image:{
-    height:'100%',
-    width:'100%',
+  image: {
+    height: '100%',
+    width: '100%',
     borderRadius: 50,
   },
-  name:{
-    fontSize:10,
-    textAlign:'center',
-    marginBottom:10
+  name: {
+    fontSize: 10,
+    textAlign: 'center',
+    marginBottom: '2%'
   }
 })
