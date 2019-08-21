@@ -3,7 +3,7 @@ import {Fragment, View,  StyleSheet, AsyncStorage } from 'react-native'
 import firebase from 'firebase'
 import { GiftedChat } from 'react-native-gifted-chat'
 import FirebaseSvc from '../firebase/firebase';
-import Header from '../components/header';
+import Header from '../components/headerChat';
 
 export default class ChatRoom extends Component {
     constructor(props) {
@@ -11,6 +11,8 @@ export default class ChatRoom extends Component {
         this.state = {
             name: this.props.navigation.state.params.name,
             uid: this.props.navigation.state.params.id,
+            image:this.props.navigation.state.params.image,
+            status:this.props.navigation.state.params.status,
             text: '',
             messagesList: [],
 
@@ -57,7 +59,10 @@ export default class ChatRoom extends Component {
         
     }
     render() {
+        console.log(this.state.name)
         return (
+            <>
+            <Header name={this.state.name} image={this.state.image} status={this.state.status} />
             <GiftedChat
                 text={this.state.text}
                 messages={this.state.messagesList}
@@ -69,6 +74,7 @@ export default class ChatRoom extends Component {
                 }}
                 onInputTextChanged={(value) => this.setState({ text: value })}
             />
+            </>
         )
     }
 }

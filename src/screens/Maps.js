@@ -15,10 +15,11 @@ class Maps extends Component {
       lastLong: null,
       users: []
     }
-    this.user()
+   
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.user()
     this.watchID = geolocation.getCurrentPosition((position) => {
       let region = {
         latitude: position.coords.latitude,
@@ -39,7 +40,7 @@ class Maps extends Component {
     });
   }
 
-  user = async () => {
+  user = () => {
     firebase.database().ref('user/').once('value', (result) => {
       let data = result.val();
       if (data !== null) {
@@ -72,8 +73,8 @@ class Maps extends Component {
           {this.state.users.map((item) =>
             <Marker
               coordinate={{
-                latitude: item.latitude,
-                longitude: item.longitude
+                latitude: item.latitude || 0,
+                longitude: item.longitude || 0
               }}>
               <View style={styles.mapCoor}>
                 {/* <Text style={styles.name}>{item.name}</Text> */}

@@ -12,13 +12,18 @@ import {
 import firebase from 'firebase'
 import { withNavigation } from 'react-navigation';
 
-
 class Chat extends Component {
-    state = {
+    constructor(props) {
+        super(props);
+    
+    this.state = {
+        chat:[],
         users: [],
         uid: null,
         refreshing: false
     }
+    this.chats()
+}
 
     componentWillMount = async () => {
         const uid = await AsyncStorage.getItem('uid')
@@ -27,7 +32,6 @@ class Chat extends Component {
         firebase.database().ref('user').on('child_added', (data) => {
             let person = data.val();
             person.id = data.key;
-            console.log('uidyid', person.id)
 
             if (person.id != this.state.uid) {
                 this.setState((prevData) => {
@@ -39,8 +43,19 @@ class Chat extends Component {
             }
         })
     }
+
+    chats = async () => {
+        firebase.database().ref('messages/').once('value', (result) => {
+          let data = result.val();
+          if (data !== null) {
+            this.setState({
+              chat : data
+            })
+          }
+        });
+      }
     render() {
-        console.log(this.state.users)
+        console.log(this.state.chat)
         return (
             <View>
                 <FlatList

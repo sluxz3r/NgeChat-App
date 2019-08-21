@@ -15,8 +15,9 @@ class Login extends Component {
     onPressLogin = async () => {
         await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
             .then(async (result) => {
+                await firebase.database().ref('/user/' + result.user.uid).update({ status: 'online' })
                 console.log('resulttttt', result)
-                await AsyncStorage.setItem('uid', result.user.uid);
+                AsyncStorage.setItem('uid', result.user.uid);
                 AsyncStorage.setItem('name', result.user.displayName);
                 AsyncStorage.setItem('image', result.user.image);
                 AsyncStorage.getItem('uid', (error, result) => {

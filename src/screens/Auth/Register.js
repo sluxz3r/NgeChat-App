@@ -16,7 +16,7 @@ export default class Register extends Component {
 
     register = async () => {
         if (this.state.email.length < 4) {
-            Alert.alert('email error')
+            Alert.alert('Email Invalid')
         } else if (this.state.password.length < 1) {
             Alert.alert('please input password more than 2')
         } else if (this.state.name.length < 3) {
@@ -25,11 +25,12 @@ export default class Register extends Component {
             await firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then(({ user }) => {
-                    console.log('user', user)
                     var userf = firebase.auth().currentUser;
                     userf.updateProfile({ displayName: this.state.name, photoURL: this.state.image })
                     firebase.database().ref('user/' + user.uid).set({
                         name: this.state.name,
+                        image: 'https://res.cloudinary.com/dbhwvh1mf/image/upload/v1566321024/img/blank-profile-picture-973460_960_720_wolhdp.png',
+                        id: user.uid
                     })
                 })
             this.props.navigation.navigate('login')
