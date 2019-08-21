@@ -4,6 +4,7 @@ import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Header from '../components/header';
 import Maps from '../screens/Maps';
 import Chat from '../screens/Chat';
+import Friends from '../screens/FriendList';
 import Geolocation from '@react-native-community/geolocation';
 import firebase from 'firebase';
 
@@ -16,14 +17,15 @@ class HomeScreen extends Component {
       routes: [
         { key: 'Chat', title: 'Chat' },
         { key: 'Maps', title: 'Maps' },
+        { key: 'Friends', title: 'Friends' },
       ],
     }
     this.getLocation()
   }
-  componentDidMount=async()=>{
+  componentWillMount = async () => {
     await AsyncStorage.getItem('name').then((value) => {
-      this.setState({ 
-        name: value, 
+      this.setState({
+        name: value,
       })
     })
   }
@@ -50,29 +52,29 @@ class HomeScreen extends Component {
   render() {
     this.updateLocation()
     return (
-        <View style={{ flex: 1, }}>
-           <StatusBar backgroundColor='#3498db' barStyle="light-content" />
-          <Header name={this.state.name} />
-          <TabView
-            navigationState={this.state}
-            labelStyle={{ backgroundColor: 'red' }}
-            renderScene={SceneMap({
-              Chat: Chat,
-              Maps: Maps,
-            })}
-            onIndexChange={index => this.setState({ index })}
-            initialLayout={{ width: Dimensions.get('window').width, height: 100 }}
-            renderTabBar={props =>
-              <TabBar
-                {...props}
-                indicatorStyle={{ backgroundColor: 'white' }}
-                style={styles.tabNav}
-                labelStyle={styles.labelStyle}
-              />
-            }
-          />
-
-        </View>
+      <View style={{ flex: 1, }}>
+        <StatusBar backgroundColor='#3498db' barStyle="light-content" />
+        <Header name={this.state.name} />
+        <TabView
+          navigationState={this.state}
+          labelStyle={{ backgroundColor: 'red' }}
+          renderScene={SceneMap({
+            Chat: Chat,
+            Maps: Maps,
+            Friends: Friends,
+          })}
+          onIndexChange={index => this.setState({ index })}
+          initialLayout={{ width: Dimensions.get('window').width, height: 100 }}
+          renderTabBar={props =>
+            <TabBar
+              {...props}
+              indicatorStyle={{ backgroundColor: 'white' }}
+              style={styles.tabNav}
+              labelStyle={styles.labelStyle}
+            />
+          }
+        />
+      </View>
     );
   }
 }
@@ -94,6 +96,6 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     fontSize: 14,
-    fontWeight:'700'
+    fontWeight: '700'
   }
 });

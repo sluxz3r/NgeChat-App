@@ -15,7 +15,7 @@ class Maps extends Component {
       lastLong: null,
       users: []
     }
-   
+
   }
 
   async componentDidMount() {
@@ -51,10 +51,6 @@ class Maps extends Component {
       }
     });
   }
-
-  componentWillUnmount() {
-    geolocation.clearWatch(this.watchID);
-  }
   render() {
     return (
       <View style={styles.con}>
@@ -70,8 +66,9 @@ class Maps extends Component {
         // default => 20
         // onRegionChange={this.onRegionChange.bind(this)}
         >
-          {this.state.users.map((item) =>
+          {this.state.users.map((item, index) =>
             <Marker
+              key={index}
               coordinate={{
                 latitude: item.latitude || 0,
                 longitude: item.longitude || 0

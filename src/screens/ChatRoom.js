@@ -26,8 +26,6 @@ export default class ChatRoom extends Component {
         })
             await firebase.database().ref('messages').child(this.state.myuid).child(this.state.uid)
                 .on('child_added', (value) => {
-                    console.log('value ',value)
-                    console.log('value dan val',value.val())
                     this.setState((previousState) => {
                         return {
                             messagesList: GiftedChat.append(previousState.messagesList, value.val()),
@@ -59,7 +57,6 @@ export default class ChatRoom extends Component {
         
     }
     render() {
-        console.log(this.state.name)
         return (
             <>
             <Header name={this.state.name} image={this.state.image} status={this.state.status} />
@@ -67,6 +64,7 @@ export default class ChatRoom extends Component {
                 text={this.state.text}
                 messages={this.state.messagesList}
                 onSend={this.sendMessage}
+                showAvatarForEveryMessage={true}
                 user={{
                     _id: this.state.myuid,
                     name: this.state.myname,

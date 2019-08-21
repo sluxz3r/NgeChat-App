@@ -7,69 +7,47 @@ import {
     Image,
     FlatList,
     TouchableOpacity,
-    AsyncStorage,
-    ActivityIndicator
+    AsyncStorage
 } from 'react-native';
 import firebase from 'firebase'
 import { withNavigation } from 'react-navigation';
 
-class Chat extends Component {
+class Friend extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            chat: [],
-            users: [],
-            data: [],
-            uid: null,
-            isLoading: true
-        }
+    this.state = {
+        users: [],
+        uid: null,
+        refreshing: false
     }
+}
 
-    componentDidMount = async () => {
+    componentWillMount = async () => {
         const uid = await AsyncStorage.getItem('uid')
         this.setState({ uid });
         this.setState({ refreshing: true });
-        firebase.database().ref('messages/' + this.state.uid).on('child_added', (data) => {
+        firebase.database().ref('user').on('child_added', (data) => {
             let person = data.val();
             person.id = data.key;
-            this.state.chat.push({
-                id: person.id
-            })
-            this.setState({ chat: this.state.chat })
-        })
-
-        firebase.database().ref('user/').once('value', (result) => {
-            let data = result.val();
-            if (data !== null) {
-                let users = Object.values(data);
-                this.setState({
-                    users,
-                    isLoading:false
+            if (person.id != this.state.uid) {
+                this.setState((prevData) => {
+                    return {
+                        users: [...prevData.users, person]
+                    }
                 })
+                this.setState({ refreshing: false });
             }
         })
-    };
-
-
+    }
     render() {
-        const users = this.state.users;
-        const chat = this.state.chat
-        const data = []
-        chat.forEach((kocak, key) => {
-            data[key] = users.find((item) => item.id === kocak.id)
-        })
         return (
             <View>
-                {this.state.isLoading == true ? 
-                <View style={{ height: Dimensions.get('screen').height * 0.8, justifyContent:'center', alignContent:'center', alignItems:'center'}}>
-                    <ActivityIndicator color={'#3498db'} size={'large'}/>
-                </View>:
                 <FlatList
-                    data={data}
+                    data={this.state.users}
                     numColumns={1}
                     renderItem={({ item }) => {
                         return (
-                            <TouchableOpacity  style={styles.button} activeOpacity={1} onPress={() => { this.props.navigation.navigate('Chat', item) }}>
+                            <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => { this.props.navigation.navigate('Chat', item) }}>
                                 <View style={styles.item}>
                                     <Image style={styles.image} source={{ uri: `${item.image}` }} />
                                 </View>
@@ -80,12 +58,12 @@ class Chat extends Component {
                             </TouchableOpacity>
                         )
                     }}
-                />}
+                />
             </View>
         )
     }
 }
-export default withNavigation(Chat)
+export default withNavigation(Friend)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -138,19 +116,3 @@ const styles = StyleSheet.create({
     }
 });
 
-// omponentWillMount = async () => {
-//     const uid = await AsyncStorage.getItem('uid')
-//     this.setState({ uid });
-//     this.setState({ refreshing: true });
-//     firebase.database().ref('messages/' + this.state.uid).once('child_added', (result) => {
-//         let data = result.val();
-//         console.log("DATA",Object.values(data))
-//       if (data !== null) {
-//         let chats = data;
-//         this.setState({
-//           chats
-//         })
-//       }
-//     })
-// }
-// get last messages

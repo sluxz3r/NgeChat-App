@@ -7,6 +7,7 @@ import firebase from 'firebase';
 
 class Header extends Component {
     state = {
+        index:0,
         name: null,
     }
     _menu = null;
@@ -20,7 +21,6 @@ class Header extends Component {
 
     Logout = async () => {
         const userToken = await AsyncStorage.getItem('uid');
-        console.log(userToken)
         firebase.database().ref('/user/' + userToken).update({ status: "offline" })
         let keys = ['uid', 'name', 'image']
         await AsyncStorage.multiRemove(keys, (error) => {
@@ -29,20 +29,20 @@ class Header extends Component {
 
     };
     render() {
-        console.log(this.props.name)
         return (
             <View style={{ padding: 8, backgroundColor: '#3498db', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ justifyContent: 'center', }}>
                     <Text style={{ color: 'white', fontSize: 20, padding: 10, fontWeight: '600' }}>NgeChat</Text>
                 </View>
                 <Menu
+                    
                     ref={this.setMenuRef}
                     button={<Text onPress={this.showMenu}>
                         <Entypo name='dots-three-vertical' size={25} color='#f5f6f7' />
                     </Text>}
                 >
-                    <MenuItem >{this.props.name}</MenuItem>
-                    <MenuItem onPress={this.Logout}>Logout</MenuItem>
+                    <MenuItem key={1} >{this.props.name}</MenuItem>
+                    <MenuItem key={2} onPress={this.Logout}>Logout</MenuItem>
                 </Menu>
             </View>
         )
