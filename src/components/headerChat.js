@@ -4,26 +4,21 @@ import { withNavigation } from 'react-navigation';
 
 class Header extends Component {
     state = {
-        name: null,
+        data: this.props.navigation.state.params,
     }
-    _menu = null;
-    setMenuRef = ref => {
-        this._menu = ref;
-    };
+    constructor(props) {
+        super(props);
+        this.buttonPress = this.buttonPress.bind(this);
 
-    showMenu = () => {
-        this._menu.show();
-    };
-    hideLogout = async () => {
-        let keys = ['uid', 'name', 'image']
-        await AsyncStorage.multiRemove(keys, (error) => {
-            this.props.navigation.navigate('Login')
-        });
+    }
 
-    };
+    buttonPress() {
+        this.props.navigation.navigate('Profile', {data:this.state.data});
+      }
+
     render() {
         return (
-            <View style={styles.container}>
+            <TouchableOpacity activeOpacity={1} onPress={this.buttonPress} style={styles.container}>
                 <View style={styles.item}>
                     <Image style={styles.image} source={{ uri: `${this.props.image}` }} />
                 </View>
@@ -31,7 +26,7 @@ class Header extends Component {
                     <Text style={styles.textName}>{this.props.name}</Text>
                     <Text style={styles.textStatus}>{this.props.status}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 }

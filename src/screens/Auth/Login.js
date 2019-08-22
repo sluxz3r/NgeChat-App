@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dimensions, TextInput, TouchableOpacity, Text, View, StyleSheet, Image, Alert, AsyncStorage, KeyboardAvoidingView, StatusBar } from 'react-native'
+import { ActivityIndicator, Dimensions, TextInput, TouchableOpacity, Text, View, StyleSheet, Image, Alert, AsyncStorage, KeyboardAvoidingView, StatusBar } from 'react-native'
 import FirebaseSvc from '../../firebase/firebase';
 import firebase from 'firebase'
 import { withNavigation } from 'react-navigation';
@@ -10,12 +10,15 @@ class Login extends Component {
         this.state = {
             email: '',
             password: '',
+            isLoading:false,
         };
     }
     onPressLogin = async () => {
+        this.setState({isLoading:true})
         await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
             .then(async (result) => {
                 await firebase.database().ref('/user/' + result.user.uid).update({ status: 'online' })
+                this.setState({isLoading:false})
                 console.log('resulttttt', result)
                 AsyncStorage.setItem('uid', result.user.uid);
                 AsyncStorage.setItem('name', result.user.displayName);
@@ -34,6 +37,10 @@ class Login extends Component {
                             ],
                         );
                     }
+                })
+            }).catch(async(err)=>{
+                this.setState({
+                    isLoading:false
                 })
             })
     }
@@ -72,10 +79,10 @@ class Login extends Component {
                         onChangeText={(text) => this.setState({ password: text })}
                         value={this.state.password} 
                         ref={(input) => this.passwordInput = input}/>
-
+                    {this.state.isLoading == false ? 
                     <TouchableOpacity style={styles.loginButton} onPress={this.onPressLogin}>
                         <Text style={styles.buttonText}>LOGIN</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>:<ActivityIndicator color='white' size={'large'} />}
                     <TouchableOpacity onPress={() => { this.props.navigation.navigate('register') }}>
                         <Text style={{ color: 'white', marginTop: 5, textAlign:'right' }}>Register</Text>
                     </TouchableOpacity>
@@ -120,7 +127,8 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         backgroundColor:'#2980b9',
-        paddingVertical:15
+        paddingVertical:15,
+        marginBottom:10
     },
     buttonText:{
         textAlign:'center',

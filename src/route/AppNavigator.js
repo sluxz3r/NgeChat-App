@@ -10,12 +10,14 @@ import AuthScreen from '../screens/Auth/Auth';
 import LoginScreen from '../screens/Auth/Login';
 import RegisterScreen from '../screens/Auth/Register';
 import ChatRoom from '../screens/ChatRoom';
+import Profile from '../screens/Profile';
 
 const createStack = createStackNavigator(
   {
     Home: { screen: HomeScreen },
     Maps: { screen: MapsScreen },
     Chat : {screen: ChatRoom},
+    Profile: { screen: Profile }
   },
   {
     headerMode: "none",
@@ -43,7 +45,8 @@ const createSwitch = createSwitchNavigator(
     login: { screen: LoginScreen },
     register: { screen: RegisterScreen},
     App: createStack,
-    Auth: stackAuth
+    Auth: stackAuth,
+    
 
   },
   {

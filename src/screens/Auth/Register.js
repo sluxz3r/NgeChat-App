@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dimensions,Image, KeyboardAvoidingView, StatusBar, TextInput, TouchableOpacity, Text, View, StyleSheet, Alert, AsyncStorage } from 'react-native'
+import { ActivityIndicator, Dimensions, Image, KeyboardAvoidingView, StatusBar, TextInput, TouchableOpacity, Text, View, StyleSheet, Alert, AsyncStorage } from 'react-native'
 import firebase from 'firebase'
 import firebaseSvc from '../../firebase/firebase';
 
@@ -11,26 +11,30 @@ export default class Register extends Component {
             password: '',
             id_user: '',
             name: '',
+            isLoading:false,
         }
     };
 
     register = async () => {
+        this.setState({isLoading:true})
         if (this.state.email.length < 4) {
             Alert.alert('Email Invalid')
         } else if (this.state.password.length < 1) {
             Alert.alert('please input password more than 2')
         } else if (this.state.name.length < 3) {
-            Alert.alert('please input password more than 3')
+            Alert.alert('please input Name more than 3')
         } else {
             await firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then(({ user }) => {
+                    this.setState({isLoading:false})
                     var userf = firebase.auth().currentUser;
                     userf.updateProfile({ displayName: this.state.name, photoURL: this.state.image })
                     firebase.database().ref('user/' + user.uid).set({
                         name: this.state.name,
                         image: 'https://res.cloudinary.com/dbhwvh1mf/image/upload/v1566321024/img/blank-profile-picture-973460_960_720_wolhdp.png',
-                        id: user.uid
+                        id: user.uid,
+                        status: 'offline'
                     })
                 })
             this.props.navigation.navigate('login')
@@ -77,12 +81,12 @@ export default class Register extends Component {
                         onChangeText={(text) => this.setState({ password: text })}
                         value={this.state.password} />
 
-
+                    {this.state.isLoading == false ? 
                     <TouchableOpacity style={styles.loginButton} onPress={this.register}>
                         <Text style={styles.buttonText}>REGISTER</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>:<ActivityIndicator color='white' size={'large'} />}
                     <TouchableOpacity onPress={() => { this.props.navigation.navigate('login') }}>
-                        <Text style={{ color: 'white', marginTop: 5, textAlign:'left' }}>Login</Text>
+                        <Text style={{ color: 'white', marginTop: 5, textAlign: 'left' }}>Login</Text>
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
@@ -109,11 +113,11 @@ const styles = StyleSheet.create({
     title: {
         color: '#FFF',
         opacity: 0.8,
-        fontSize:18
+        fontSize: 18
     },
     inputContainer: {
         paddingHorizontal: 20,
-        paddingVertical:10
+        paddingVertical: 10
     },
     inputField: {
         height: 40,
@@ -124,12 +128,12 @@ const styles = StyleSheet.create({
 
     },
     loginButton: {
-        backgroundColor:'#2980b9',
-        paddingVertical:15
+        backgroundColor: '#2980b9',
+        paddingVertical: 15
     },
-    buttonText:{
-        textAlign:'center',
-        color:'#FFFFFF',
-        fontWeight:'700'
+    buttonText: {
+        textAlign: 'center',
+        color: '#FFFFFF',
+        fontWeight: '700'
     },
 })
