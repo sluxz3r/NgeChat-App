@@ -10,6 +10,10 @@ class Header extends Component {
         index:0,
         name: null,
     }
+    constructor(props) {
+        super(props);
+        this.buttonPress = this.buttonPress.bind(this);
+    }
     _menu = null;
     setMenuRef = ref => {
         this._menu = ref;
@@ -28,6 +32,11 @@ class Header extends Component {
         });
 
     };
+
+    buttonPress() {
+        this._menu.hide();
+        this.props.navigation.navigate('ProfileUser', { name: this.props.name, uid:this.props.uid });
+    };
     render() {
         return (
             <View style={{ padding: 8, backgroundColor: '#3498db', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -41,7 +50,7 @@ class Header extends Component {
                         <Entypo name='dots-three-vertical' size={25} color='#f5f6f7' />
                     </Text>}
                 >
-                    <MenuItem key={1} >{this.props.name}</MenuItem>
+                    <MenuItem onPress={this.buttonPress} key={1} >{this.props.name}</MenuItem>
                     <MenuItem key={2} onPress={this.Logout}>Logout</MenuItem>
                 </Menu>
             </View>

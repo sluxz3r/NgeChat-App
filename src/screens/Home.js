@@ -14,6 +14,7 @@ class HomeScreen extends Component {
     this.state = {
       index: 0,
       name: null,
+      uid: null,
       routes: [
         { key: 'Chat', title: 'Chat' },
         { key: 'Maps', title: 'Maps' },
@@ -26,6 +27,11 @@ class HomeScreen extends Component {
     await AsyncStorage.getItem('name').then((value) => {
       this.setState({
         name: value,
+      })
+    })
+    AsyncStorage.getItem('uid').then((value) => {
+      this.setState({
+        uid: value,
       })
     })
   }
@@ -54,7 +60,7 @@ class HomeScreen extends Component {
     return (
       <View style={{ flex: 1, }}>
         <StatusBar backgroundColor='#3498db' barStyle="light-content" />
-        <Header name={this.state.name} />
+        <Header name={this.state.name} uid={this.state.uid} />
         <TabView
           navigationState={this.state}
           labelStyle={{ backgroundColor: 'red' }}

@@ -11,13 +11,15 @@ import LoginScreen from '../screens/Auth/Login';
 import RegisterScreen from '../screens/Auth/Register';
 import ChatRoom from '../screens/ChatRoom';
 import Profile from '../screens/Profile';
+import ProfileUser from '../screens/ProfileUser';
 
 const createStack = createStackNavigator(
   {
     Home: { screen: HomeScreen },
     Maps: { screen: MapsScreen },
     Chat : {screen: ChatRoom},
-    Profile: { screen: Profile }
+    Profile: { screen: Profile },
+    ProfileUser: { screen: ProfileUser }
   },
   {
     headerMode: "none",
