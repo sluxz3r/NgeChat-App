@@ -18,7 +18,8 @@ export default class ChatRoom extends Component {
 
         }
     }
-    async componentWillMount() {
+    //change will to did
+    async componentDidMount() {
         this.setState({
             myuid: await AsyncStorage.getItem('uid'),
             myname: await AsyncStorage.getItem('name'),

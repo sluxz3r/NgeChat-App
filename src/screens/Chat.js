@@ -11,6 +11,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import firebase from 'firebase'
+import Geolocation from '@react-native-community/geolocation';
 import { withNavigation } from 'react-navigation';
 
 class Chat extends Component {
@@ -24,8 +25,9 @@ class Chat extends Component {
             isLoading: true
         }
     }
-
     componentDidMount = async () => {
+        this.myTimer = setInterval(() => this.getLocation(), 10000);
+        this.myTimer2 = setInterval(() => this.updateLocation(), 10000);
         const uid = await AsyncStorage.getItem('uid')
         this.setState({ uid });
         this.setState({ refreshing: true });
@@ -44,13 +46,38 @@ class Chat extends Component {
                 let users = Object.values(data);
                 this.setState({
                     users,
-                    isLoading:false
+                    isLoading: false
                 })
             }
         })
     };
 
+    getLocation = async () => {
+        Geolocation.getCurrentPosition(info => {
+            this.setState({
+                latitude: info.coords.latitude,
+                longitude: info.coords.longitude
+            })
+        });
 
+    }
+    updateLocation = async () => {
+        AsyncStorage.getItem('uid', (error, result) => {
+            if (result) {
+                if (this.state.latitude) {
+                    firebase.database().ref('user/' + result).update({
+                        latitude: this.state.latitude,
+                        longitude: this.state.longitude
+                    })
+                }
+            }
+        });
+    }
+
+    componentWillUnmount = () => {
+        clearInterval(myTimer);
+        clearInterval(myTimer2);
+    }
     render() {
         const users = this.state.users;
         const chat = this.state.chat
@@ -60,27 +87,27 @@ class Chat extends Component {
         })
         return (
             <View>
-                {this.state.isLoading == true ? 
-                <View style={{ height: Dimensions.get('screen').height * 0.8, justifyContent:'center', alignContent:'center', alignItems:'center'}}>
-                    <ActivityIndicator color={'#3498db'} size={'large'}/>
-                </View>:
-                <FlatList
-                    data={data}
-                    numColumns={1}
-                    renderItem={({ item }) => {
-                        return (
-                            <TouchableOpacity  style={styles.button} activeOpacity={1} onPress={() => { this.props.navigation.navigate('Chat', item) }}>
-                                <View style={styles.item}>
-                                    <Image style={styles.image} source={{ uri: `${item.image}` }} />
-                                </View>
-                                <View style={styles.content}>
-                                    <Text style={styles.textName}>{item.name}</Text>
-                                    <Text style={styles.textStatus}>{item.status}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    }}
-                />}
+                {this.state.isLoading == true ?
+                    <View style={{ height: Dimensions.get('screen').height * 0.8, justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator color={'#3498db'} size={'large'} />
+                    </View> :
+                    <FlatList
+                        data={data}
+                        numColumns={1}
+                        renderItem={({ item }) => {
+                            return (
+                                <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => { this.props.navigation.navigate('Chat', item) }}>
+                                    <View style={styles.item}>
+                                        <Image style={styles.image} source={{ uri: `${item.image}` }} />
+                                    </View>
+                                    <View style={styles.content}>
+                                        <Text style={styles.textName}>{item.name}</Text>
+                                        <Text style={styles.textStatus}>{item.status}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        }}
+                    />}
             </View>
         )
     }

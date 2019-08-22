@@ -8,7 +8,7 @@ import FirebaseSvc from '../firebase/firebase';
 class Maps extends Component {
   constructor(props) {
     super(props);
-
+    this.user()
     this.state = {
       mapRegion: null,
       lastLat: null,
@@ -19,7 +19,7 @@ class Maps extends Component {
   }
 
   async componentDidMount() {
-    await this.user()
+    // await this.user()
     this.watchID = geolocation.getCurrentPosition((position) => {
       let region = {
         latitude: position.coords.latitude,
@@ -41,7 +41,7 @@ class Maps extends Component {
   }
 
   user = () => {
-    firebase.database().ref('user/').once('value', (result) => {
+    firebase.database().ref('user/').on('value', (result) => {
       let data = result.val();
       if (data !== null) {
         let users = Object.values(data);

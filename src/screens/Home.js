@@ -22,9 +22,8 @@ class HomeScreen extends Component {
       ],
     }
     this.getLocation()
-  }
-  componentWillMount = async () => {
-    await AsyncStorage.getItem('name').then((value) => {
+    this.updateLocation()
+    AsyncStorage.getItem('name').then((value) => {
       this.setState({
         name: value,
       })
@@ -42,6 +41,7 @@ class HomeScreen extends Component {
         longitude: info.coords.longitude
       })
     });
+
   }
   updateLocation = async () => {
     AsyncStorage.getItem('uid', (error, result) => {
@@ -56,7 +56,6 @@ class HomeScreen extends Component {
     });
   }
   render() {
-    this.updateLocation()
     return (
       <View style={{ flex: 1, }}>
         <StatusBar backgroundColor='#3498db' barStyle="light-content" />

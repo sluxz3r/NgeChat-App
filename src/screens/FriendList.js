@@ -22,7 +22,7 @@ class Friend extends Component {
     }
 }
 
-    componentWillMount = async () => {
+    componentDidMount = async () => {
         const uid = await AsyncStorage.getItem('uid')
         this.setState({ uid });
         this.setState({ refreshing: true });

@@ -38,7 +38,6 @@ class Profile extends Component {
                 address: res[0].formattedAddress
             })
         })
-            .catch(error => alert(error));
 
         return (
             <View style={styles.container}>
