@@ -43,8 +43,7 @@ NgeChat App means to communicate quickly and realtime. You can find out the loca
     <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567231824/wa/WhatsApp_Image_2019-08-31_at_12.33.30_xcurx1.jpg">    
     <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567233023/wa/register_nrhkvv.gif">
     <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567233154/wa/login_xzjndv.gif">
-      <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567233393/wa/home_zyoqj2.gif">
-        <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567233436/wa/chat_dovnnm.gif">
+    <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567233393/wa/home_zyoqj2.gif">
     <img width="250" src="https://res.cloudinary.com/dbhwvh1mf/image/upload/v1567233067/wa/logout_wd8ds3.gif">
 </div>
 
